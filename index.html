@@ -125,12 +125,14 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
 
   <form id="kramaForm">
     <section class="card">
-      <div class="section-head"><div><h2>01 · Identitas Krama</h2><p>Data dasar untuk identifikasi dan administrasi.</p></div></div>
+      <div class="section-head"><div><h2>01 · Identitas Krama</h2><p>Data dasar untuk identifikasi dan administrasi. NIK digunakan untuk administrasi internal dan tidak ditampilkan kepada publik.</p></div></div>
       <div class="grid">
         <div class="field"><label>Nama Lengkap <span class="req">*</span></label><input name="nama" required></div>
         <div class="field"><label>Nama Panggilan</label><input name="panggilan"></div>
         <div class="field"><label>Jenis Kelamin <span class="req">*</span></label><select name="jk" required><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+        <div class="field"><label>Tempat Lahir</label><input name="tempat_lahir" placeholder="Kota/Kabupaten tempat lahir"></div>
         <div class="field"><label>Tanggal Lahir <span class="req">*</span></label><input type="date" name="lahir" required></div>
+        <div class="field"><label>NIK <span class="req">*</span></label><input name="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}" placeholder="16 digit NIK" required></div>
         <div class="field"><label>Status Perkawinan</label><select name="status_kawin"><option value="">Pilih</option><option>Belum Menikah</option><option>Menikah</option><option>Cerai Hidup</option><option>Cerai Mati</option></select></div>
         <div class="field"><label>No. WhatsApp <span class="req">*</span></label><input name="wa" placeholder="08xxxxxxxxxx" required></div>
         <div class="field"><label>Email</label><input type="email" name="email"></div>
@@ -161,6 +163,15 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
           </select>
         </div>
         <div class="field full"><label>Alamat Domisili <span class="req">*</span></label><textarea name="alamat" id="alamatDomisili" required></textarea></div>
+        <div class="field"><label>Status Tinggal <span class="req">*</span></label><select name="status_tinggal" required>
+          <option value="">Pilih</option>
+          <option>Tinggal di rumah sendiri</option>
+          <option>Tinggal bersama keluarga</option>
+          <option>Kontrak/Kos</option>
+          <option>Tinggal di luar daerah</option>
+          <option>Tinggal di luar negeri</option>
+          <option>Lainnya</option>
+        </select></div>
         <div id="indonesiaFields" class="region-panel full">
           <div class="grid">
             <div class="field"><label>Provinsi <span class="req">*</span></label><select id="provinsi" name="provinsi" required><option value="">Memuat provinsi...</option></select></div>
@@ -173,13 +184,13 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
         </div>
         <div id="singaporeFields" class="region-panel full" style="display:none">
           <div class="grid">
-            <div class="field"><label>Region <span class="req">*</span></label><select id="sgRegion"><option value="">Pilih region</option></select></div>
-            <div class="field"><label>Planning Area <span class="req">*</span></label><select id="sgPlanningArea"><option value="">Pilih region terlebih dahulu</option></select></div>
-            <div class="field"><label>Subzone <span class="req">*</span></label><select id="sgSubzone"><option value="">Pilih planning area terlebih dahulu</option></select></div>
-            <div class="field"><label>Street / Building</label><input id="sgStreet" placeholder="Contoh: 123 Example Street, #08-01"></div>
-            <div class="field"><label>Postal Code <span class="req">*</span></label><input id="sgPostal" inputmode="numeric" maxlength="6" placeholder="6 digit postal code"></div>
+            <div class="field"><label>Region <span class="req">*</span></label><select id="sgRegion" name="region"><option value="">Pilih region</option></select></div>
+            <div class="field"><label>Planning Area <span class="req">*</span></label><select id="sgPlanningArea" name="planning_area"><option value="">Pilih region terlebih dahulu</option></select></div>
+            <div class="field"><label>Subzone <span class="req">*</span></label><select id="sgSubzone" name="subzone"><option value="">Pilih planning area terlebih dahulu</option></select></div>
+            <div class="field"><label>Street / Building</label><input id="sgStreet" name="street_building" placeholder="Contoh: 123 Example Street, #08-01"></div>
+            <div class="field"><label>Postal Code <span class="req">*</span></label><input id="sgPostal" name="kodepos_sg" inputmode="numeric" maxlength="6" placeholder="6 digit postal code"></div>
           </div>
-          <div class="region-source">Untuk Singapore digunakan struktur Region → Planning Area → Subzone. Data wilayah dimuat dari snapshot statis agar tidak bergantung pada API dinamis. Street/Building dan Postal Code melengkapi alamat domisili.</div>
+          <div class="region-source">Untuk Singapore digunakan struktur Region → Planning Area → Subzone. Street/Building dan Postal Code disimpan terpisah agar siap dipetakan ke Master Data Krama.</div>
         </div>
       </div>
       <div class="location-box">
@@ -206,6 +217,7 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
         <div class="field"><label>Pekerjaan</label><input name="pekerjaan"></div>
         <div class="field"><label>Nama Instansi / Usaha</label><input name="instansi"></div>
         <div class="field"><label>Nama Kontak Darurat</label><input name="darurat_nama"></div>
+        <div class="field"><label>Hubungan Kontak Darurat</label><select name="darurat_hubungan"><option value="">Pilih</option><option>Suami/Istri</option><option>Orang Tua</option><option>Anak</option><option>Saudara</option><option>Keluarga Lainnya</option><option>Teman</option><option>Lainnya</option></select></div>
         <div class="field"><label>No. Kontak Darurat</label><input name="darurat_no"></div>
         <div class="field full"><label>Kebutuhan Khusus / Aksesibilitas <span>(opsional)</span></label><textarea name="akses"></textarea></div>
       </div>
@@ -244,7 +256,7 @@ document.getElementById('kramaForm').addEventListener('submit', function(e){
   e.preventDefault();
   const status=document.getElementById('status');
   status.style.display='block';
-  status.textContent='Data form berhasil divalidasi di prototype. Belum dikirim ke Google Sheets atau server.';
+  status.textContent='Data form berhasil divalidasi. V5.2 siap untuk tahap integrasi ke Master Data Google Sheet.';
   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 });
 </script>
@@ -306,7 +318,7 @@ sgArea.addEventListener('change',()=>{
   fillSelect(sgSubzone,z.map(x=>({id:x.id,name:x.name?.en||x.name?.local})), 'Pilih subzone');
 });
 negara.addEventListener('change',async()=>{const sg=negara.value==='Singapore';indonesiaFields.style.display=sg?'none':'block';singaporeFields.style.display=sg?'block':'none';if(sg){setSingaporeRequired();await loadSingapore()}else setIndonesiaRequired()});
-document.getElementById('kramaForm').addEventListener('submit',()=>{if(negara.value==='Singapore'){prov.innerHTML='<option value="Singapore">Singapore</option>';prov.value='Singapore';kab.innerHTML='<option value="Singapore">Singapore</option>';kab.value='Singapore';kec.innerHTML='<option value="'+sgArea.value+'">'+sgArea.value+'</option>';kec.value=sgArea.value;desa.innerHTML='<option value="'+sgSubzone.value+'">'+sgSubzone.value+'</option>';desa.value=sgSubzone.value;kodepos.value=sgPostal.value;const base=alamat.value.trim();if(sgStreet.value.trim())alamat.value=base?(base+' — '+sgStreet.value.trim()):sgStreet.value.trim()}});
+document.getElementById('kramaForm').addEventListener('submit',()=>{if(negara.value==='Singapore'){prov.innerHTML='<option value="Singapore">Singapore</option>';prov.value='Singapore';kab.innerHTML='<option value="Singapore">Singapore</option>';kab.value='Singapore';kec.innerHTML='<option value="'+sgArea.value+'">'+sgArea.value+'</option>';kec.value=sgArea.value;desa.innerHTML='<option value="'+sgSubzone.value+'">'+sgSubzone.value+'</option>';desa.value=sgSubzone.value;kodepos.value=sgPostal.value;const base=alamat.value.trim();if(sgStreet.value.trim())alamat.value=base?(base+' — '+sgStreet.value.trim()):sgStreet.value.trim();kodepos.value=sgPostal.value}});
 loadProvincesFast();setIndonesiaRequired();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
