@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
 <title>Pemutakhiran Data Krama — Dadya Panji Sakti</title>
 <style>
 :root {
@@ -80,7 +82,7 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
 
 .region-panel{padding:16px;border:1px solid rgba(44,79,63,.10);border-radius:16px;background:#fbfaf7}.region-source{margin-top:12px;color:#777;font-size:12px;line-height:1.5}.region-panel select:disabled{background:#f2f3f0;color:#8a918e}
 </style>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css"/>
 </head>
 <body>
 <div class="wrap">
@@ -248,32 +250,48 @@ document.getElementById('kramaForm').addEventListener('submit', function(e){
 </script>
 
 <script>
-/* Master wilayah: Indonesia via static API; Singapore via URA/data.gov.sg dataset. */
+/* V5 performance: province list is embedded; deeper levels load only after selection and are cached locally. */
 const ID_BASE='https://cdn.jsdelivr.net/gh/izzulabadi/api-wilayah-indonesia-2026@v1.0.4/api';
 const SG_API='https://api-open.data.gov.sg/v1/public/api/datasets/d_8594ae9ff96d0c708bc2af633048edfb/poll-download';
 const negara=document.getElementById('domisiliNegara'), indonesiaFields=document.getElementById('indonesiaFields'), singaporeFields=document.getElementById('singaporeFields');
 const prov=document.getElementById('provinsi'), kab=document.getElementById('kabupaten'), kec=document.getElementById('kecamatan'), desa=document.getElementById('desa'), kodepos=document.getElementById('kodepos');
 const alamat=document.getElementById('alamatDomisili'), sgRegion=document.getElementById('sgRegion'), sgArea=document.getElementById('sgPlanningArea'), sgSubzone=document.getElementById('sgSubzone'), sgStreet=document.getElementById('sgStreet'), sgPostal=document.getElementById('sgPostal');
 const sgState={features:[],loaded:false};
+const ID_PROVINCES=[
+{id:'11',name:'ACEH'},{id:'12',name:'SUMATERA UTARA'},{id:'13',name:'SUMATERA BARAT'},{id:'14',name:'RIAU'},{id:'15',name:'JAMBI'},{id:'16',name:'SUMATERA SELATAN'},{id:'17',name:'BENGKULU'},{id:'18',name:'LAMPUNG'},{id:'19',name:'KEPULAUAN BANGKA BELITUNG'},{id:'21',name:'KEPULAUAN RIAU'},
+{id:'31',name:'DKI JAKARTA'},{id:'32',name:'JAWA BARAT'},{id:'33',name:'JAWA TENGAH'},{id:'34',name:'DI YOGYAKARTA'},{id:'35',name:'JAWA TIMUR'},{id:'36',name:'BANTEN'},
+{id:'51',name:'BALI'},{id:'52',name:'NUSA TENGGARA BARAT'},{id:'53',name:'NUSA TENGGARA TIMUR'},{id:'61',name:'KALIMANTAN BARAT'},{id:'62',name:'KALIMANTAN TENGAH'},{id:'63',name:'KALIMANTAN SELATAN'},{id:'64',name:'KALIMANTAN TIMUR'},{id:'65',name:'KALIMANTAN UTARA'},
+{id:'71',name:'SULAWESI UTARA'},{id:'72',name:'SULAWESI TENGAH'},{id:'73',name:'SULAWESI SELATAN'},{id:'74',name:'SULAWESI TENGGARA'},{id:'75',name:'GORONTALO'},{id:'76',name:'SULAWESI BARAT'},
+{id:'81',name:'MALUKU'},{id:'82',name:'MALUKU UTARA'},{id:'91',name:'PAPUA BARAT'},{id:'92',name:'PAPUA BARAT DAYA'},{id:'93',name:'PAPUA'},{id:'94',name:'PAPUA SELATAN'},{id:'95',name:'PAPUA TENGAH'},{id:'96',name:'PAPUA PEGUNUNGAN'}];
 function fillSelect(el,items,placeholder,valueKey='id',labelKey='name'){el.innerHTML='';const f=document.createElement('option');f.value='';f.textContent=placeholder;el.appendChild(f);items.forEach(x=>{const o=document.createElement('option');if(typeof x==='string'){o.value=x;o.textContent=x}else{o.value=x[valueKey]??x.name;o.textContent=x[labelKey]??x.name}el.appendChild(o)});el.disabled=items.length===0}
-async function getJSON(url){const r=await fetch(url,{cache:'force-cache'});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
-async function loadProvinces(){try{fillSelect(prov,await getJSON(`${ID_BASE}/provinces.json`),'Pilih provinsi')}catch(e){fillSelect(prov,[],'Gagal memuat provinsi — refresh halaman');console.error(e)}}
-prov.addEventListener('change',async()=>{fillSelect(kab,[],'Memuat kabupaten/kota...');fillSelect(kec,[],'Pilih kabupaten/kota terlebih dahulu');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!prov.value)return;try{fillSelect(kab,await getJSON(`${ID_BASE}/regencies/${prov.value}.json`),'Pilih kabupaten/kota')}catch(e){fillSelect(kab,[],'Gagal memuat kabupaten/kota');console.error(e)}});
-kab.addEventListener('change',async()=>{fillSelect(kec,[],'Memuat kecamatan...');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!kab.value)return;try{fillSelect(kec,await getJSON(`${ID_BASE}/districts/${kab.value}.json`),'Pilih kecamatan')}catch(e){fillSelect(kec,[],'Gagal memuat kecamatan');console.error(e)}});
-kec.addEventListener('change',async()=>{fillSelect(desa,[],'Memuat desa/kelurahan...');kodepos.value='';if(!kec.value)return;try{fillSelect(desa,await getJSON(`${ID_BASE}/villages/${kec.value}.json`),'Pilih desa/kelurahan')}catch(e){fillSelect(desa,[],'Gagal memuat desa/kelurahan');console.error(e)}});
+async function getJSON(url,key){const cacheKey='dps-v5:'+key+':'+url;try{const cached=sessionStorage.getItem(cacheKey);if(cached)return JSON.parse(cached)}catch(e){}const r=await fetch(url,{cache:'force-cache'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();try{sessionStorage.setItem(cacheKey,JSON.stringify(data))}catch(e){}return data}
+function loadProvincesFast(){fillSelect(prov,ID_PROVINCES,'Pilih provinsi');prov.disabled=false}
+prov.addEventListener('change',async()=>{fillSelect(kab,[],'Memuat kabupaten/kota...');fillSelect(kec,[],'Pilih kabupaten/kota terlebih dahulu');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!prov.value)return;try{const data=await getJSON(`${ID_BASE}/regencies/${prov.value}.json`,'regencies-'+prov.value);fillSelect(kab,data,'Pilih kabupaten/kota')}catch(e){fillSelect(kab,[],'Gagal memuat kabupaten/kota — coba lagi');console.error(e)}});
+kab.addEventListener('change',async()=>{fillSelect(kec,[],'Memuat kecamatan...');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!kab.value)return;try{const data=await getJSON(`${ID_BASE}/districts/${kab.value}.json`,'districts-'+kab.value);fillSelect(kec,data,'Pilih kecamatan')}catch(e){fillSelect(kec,[],'Gagal memuat kecamatan — coba lagi');console.error(e)}});
+kec.addEventListener('change',async()=>{fillSelect(desa,[],'Memuat desa/kelurahan...');kodepos.value='';if(!kec.value)return;try{const data=await getJSON(`${ID_BASE}/villages/${kec.value}.json`,'villages-'+kec.value);fillSelect(desa,data,'Pilih desa/kelurahan');const selected=data.find(x=>x.id===desa.value);if(selected?.postal_code)kodepos.value=selected.postal_code}catch(e){fillSelect(desa,[],'Gagal memuat desa/kelurahan — coba lagi');console.error(e)}});
+desa.addEventListener('change',()=>{const opt=desa.options[desa.selectedIndex];if(opt&&opt.dataset?.postal)kodepos.value=opt.dataset.postal});
 function setIndonesiaRequired(){[prov,kab,kec,desa].forEach(x=>x.required=true);[sgRegion,sgArea,sgSubzone,sgPostal].forEach(x=>x.required=false)}
 function setSingaporeRequired(){[prov,kab,kec,desa].forEach(x=>x.required=false);[sgRegion,sgArea,sgSubzone,sgPostal].forEach(x=>x.required=true)}
-async function loadSingapore(){if(sgState.loaded)return;try{const meta=await getJSON(SG_API);const url=meta?.data?.url;if(!url)throw new Error('URL dataset Singapore tidak tersedia');const geo=await getJSON(url);sgState.features=geo.features||[];const regions=[...new Set(sgState.features.map(f=>f.properties?.REGION_N).filter(Boolean))].sort();fillSelect(sgRegion,regions,'Pilih region');sgState.loaded=true}catch(e){fillSelect(sgRegion,[],'Gagal memuat region Singapore');console.error(e);alert('Data wilayah Singapore belum dapat dimuat. Silakan refresh halaman.')}}
+async function loadSingapore(){if(sgState.loaded)return;try{const meta=await getJSON(SG_API,'sg-meta');const url=meta?.data?.url;if(!url)throw new Error('URL dataset Singapore tidak tersedia');const geo=await getJSON(url,'sg-geojson');sgState.features=geo.features||[];const regions=[...new Set(sgState.features.map(f=>f.properties?.REGION_N).filter(Boolean))].sort();fillSelect(sgRegion,regions,'Pilih region');sgState.loaded=true}catch(e){fillSelect(sgRegion,[],'Gagal memuat region Singapore');console.error(e);alert('Data wilayah Singapore belum dapat dimuat. Silakan periksa koneksi internet dan coba lagi.')}}
 sgRegion.addEventListener('change',()=>{const r=sgRegion.value;const a=[...new Set(sgState.features.filter(f=>f.properties?.REGION_N===r).map(f=>f.properties?.PLN_AREA_N).filter(Boolean))].sort();fillSelect(sgArea,a,'Pilih planning area');fillSelect(sgSubzone,[],'Pilih planning area terlebih dahulu')});
 sgArea.addEventListener('change',()=>{const r=sgRegion.value,a=sgArea.value;const z=[...new Set(sgState.features.filter(f=>f.properties?.REGION_N===r&&f.properties?.PLN_AREA_N===a).map(f=>f.properties?.SUBZONE_N).filter(Boolean))].sort();fillSelect(sgSubzone,z,'Pilih subzone')});
 negara.addEventListener('change',async()=>{const sg=negara.value==='Singapore';indonesiaFields.style.display=sg?'none':'block';singaporeFields.style.display=sg?'block':'none';if(sg){setSingaporeRequired();await loadSingapore()}else setIndonesiaRequired()});
-// Singapore dipetakan ke kolom master yang sudah ada: Provinsi=Singapore, Kabupaten=Region, Kecamatan=Planning Area, Desa/Kelurahan=Subzone.
 document.getElementById('kramaForm').addEventListener('submit',()=>{if(negara.value==='Singapore'){prov.innerHTML='<option value="Singapore">Singapore</option>';prov.value='Singapore';kab.innerHTML='<option value="Singapore">Singapore</option>';kab.value='Singapore';kec.innerHTML='<option value="'+sgArea.value+'">'+sgArea.value+'</option>';kec.value=sgArea.value;desa.innerHTML='<option value="'+sgSubzone.value+'">'+sgSubzone.value+'</option>';desa.value=sgSubzone.value;kodepos.value=sgPostal.value;const base=alamat.value.trim();if(sgStreet.value.trim())alamat.value=base?(base+' — '+sgStreet.value.trim()):sgStreet.value.trim()}});
-loadProvinces();setIndonesiaRequired();
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+loadProvincesFast();setIndonesiaRequired();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 <script>
-const map=L.map('map',{scrollWheelZoom:true,zoomControl:true}).setView([-8.115,115.090],9);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+let map;
+function initMap(){
+  const mapBox=document.getElementById('map');
+  try{
+    map=L.map('map',{scrollWheelZoom:true,zoomControl:true}).setView([-8.115,115.090],9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+    setTimeout(()=>map.invalidateSize(),150);
+    window.addEventListener('resize',()=>map&&map.invalidateSize());
+  }catch(err){mapBox.innerHTML='<div style="padding:24px;text-align:center;color:#6e7773">⚠️ Peta belum dapat dimuat. Silakan refresh halaman.</div>';console.error(err)}
+}
+if(window.L)initMap(); else window.addEventListener('load',()=>{if(window.L)initMap()});
 let locationMarker=null;
 const latInput=document.getElementById('latitude');
 const lngInput=document.getElementById('longitude');
@@ -281,6 +299,7 @@ const locationStatus=document.getElementById('locationStatus');
 function setCoordinates(lat,lng,source='GPS'){
   const lat6=Number(lat).toFixed(6), lng6=Number(lng).toFixed(6);
   latInput.value=lat6; lngInput.value=lng6;
+  if(!map){locationStatus.textContent='Peta belum siap. Silakan tunggu sebentar lalu coba lagi.';return;}
   if(!locationMarker){
     locationMarker=L.marker([Number(lat),Number(lng)],{draggable:true}).addTo(map);
     locationMarker.bindPopup('📍 Titik lokasi domisili').openPopup();
