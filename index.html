@@ -252,12 +252,68 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
 <div class="footer">DADYA PANJI SAKTI · DESA BUNGKULAN<br>Prototype pemutakhiran data — bukan sistem produksi.<br><strong>© 2026 Dadya Panji Sakti · Developed by Jabler</strong></div>
 </div>
 <script>
-document.getElementById('kramaForm').addEventListener('submit', function(e){
+/*
+ * INTEGRASI BACKEND — BELUM AKTIF.
+ * Setelah Apps Script di-review dan deploy sebagai Web App, isi URL /exec.
+ * Catatan: browser lintas domain dapat membatasi pembacaan respons Apps Script.
+ * Uji dulu dengan data dummy. Jangan gunakan data pribadi sebelum konfirmasi.
+ */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziwWD8oxBrlfxoY1a6Ph0vDsnLJK9Tm6hxLBNU8yu0Tt4JLBH-rIQdQm_K7_qnkPJB/exec";
+
+document.getElementById('kramaForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  const status=document.getElementById('status');
-  status.style.display='block';
-  status.textContent='Data form berhasil divalidasi. V5.2 siap untuk tahap integrasi ke Master Data Google Sheet.';
-  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  const form = this;
+  const status = document.getElementById('status');
+  status.style.display = 'block';
+
+  if (!form.reportValidity()) return;
+
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('https://script.google.com/macros/s/') !== 0) {
+    status.textContent = 'Form belum terhubung: URL Web App Apps Script belum dipasang. Data belum dikirim.';
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    return;
+  }
+
+  const data = {};
+  new FormData(form).forEach((value, key) => { data[key] = String(value).trim(); });
+  const consent = {};
+  ['c1','c2','c3','c4','c5'].forEach(id => {
+    const el = document.getElementById(id);
+    consent[id] = !!(el && el.checked);
+  });
+  data.persetujuan_penggunaan_data = consent.c1;
+
+  const payload = { data, consent };
+  const submitButton = form.querySelector('button[type="submit"]');
+  if (submitButton) submitButton.disabled = true;
+  status.textContent = 'Mengirim data uji…';
+  try {
+    /*
+     * text/plain avoids the JSON preflight in many browser setups.
+     * Apps Script deployments may still redirect or restrict cross-origin
+     * response reads. Therefore success is shown only if JSON response is readable.
+     */
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+    const result = await response.json();
+    if (result && result.success && result.stage === 'saved') {
+      status.textContent = 'Data berhasil diterima. ID Krama: ' + (result.idKrama || 'menunggu konfirmasi') + '. Status: menunggu verifikasi Prajuru.';
+      form.reset();
+    } else if (result && result.success && result.stage === 'validation_only') {
+      status.textContent = 'Validasi berhasil, tetapi penyimpanan belum diaktifkan. Tidak ada data yang disimpan.';
+    } else {
+      status.textContent = (result && result.message) ? result.message : 'Pengiriman belum berhasil dikonfirmasi. Periksa Apps Script dan Google Sheets sebelum mencoba lagi.';
+    }
+  } catch (err) {
+    status.textContent = 'Browser tidak dapat membaca respons Apps Script. Data mungkin belum tersimpan atau request ditolak. Periksa Execution Log dan Google Sheets sebelum mengirim ulang agar tidak terjadi pengiriman berulang.';
+  } finally {
+    if (submitButton) submitButton.disabled = false;
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  }
 });
 </script>
 
