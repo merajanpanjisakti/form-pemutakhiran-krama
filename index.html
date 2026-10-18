@@ -92,7 +92,7 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
       <div class="kicker">Dadya Panji Sakti · Desa Bungkulan</div>
       <h1>Pemutakhiran Data Krama</h1>
       <p>Form ini digunakan untuk memperbarui dan melengkapi data Krama Dadya Panji Sakti. Data yang dikumpulkan akan menjadi fondasi database digital Dadya untuk administrasi Krama, komunikasi internal, pemetaan persebaran Krama, dan pengembangan pelayanan digital Dadya. Mohon isi data dengan benar dan periksa kembali sebelum dikirim.</p>
-      <div class="badge">V3 · Master Wilayah · Peta Interaktif · Logo V3 tertanam</div>
+      <div class="badge">V6 · Untuk seluruh komponen Dadya · Silsilah · Master Wilayah · Peta Interaktif</div>
     </div>
   </header>
   
@@ -125,29 +125,49 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
 
   <form id="kramaForm">
     <section class="card">
-      <div class="section-head"><div><h2>01 · Identitas Krama</h2><p>Data dasar untuk identifikasi dan administrasi. NIK digunakan untuk administrasi internal dan tidak ditampilkan kepada publik.</p></div></div>
+      <div class="section-head"><div><h2>01 · Identitas Krama</h2><p>Data dasar untuk identifikasi dan administrasi Krama.</p></div></div>
       <div class="grid">
+        <div class="note full" style="grid-column:1/-1">Form ini untuk <strong>seluruh komponen Dadya</strong>: Krama Gede, Krama Istri, Krama Duda/Janda, Teruna, dan Pesaren (termasuk prajuru). Anda boleh mengisi untuk orang tua atau anggota keluarga lain: pilih <strong>Diisi Oleh</strong>, lalu isi data di bawah ini dengan data <strong>anggota yang didata</strong>, bukan data Anda.</div>
+        <div class="field"><label>Diisi Oleh <span class="req">*</span></label><select name="diisi_oleh" id="diisiOleh" required><option value="">Pilih</option><option>Diri Sendiri</option><option>Anak</option><option>Pasangan</option><option>Saudara</option><option>Keluarga Lainnya</option></select></div>
+        <div class="field" id="fieldNamaPengisi" style="display:none"><label>Nama Pengisi <span class="req">*</span></label><input name="nama_pengisi" id="namaPengisi" disabled placeholder="Nama Anda sebagai pengisi"></div>
         <div class="field"><label>Nama Lengkap <span class="req">*</span></label><input name="nama" required></div>
         <div class="field"><label>Nama Panggilan</label><input name="panggilan"></div>
-        <div class="field"><label>Jenis Kelamin <span class="req">*</span></label><select name="jk" required><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+        <div class="field"><label>Jenis Kelamin <span class="req">*</span></label><select name="jk" id="jk" required><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
         <div class="field"><label>Tempat Lahir</label><input name="tempat_lahir" placeholder="Kota/Kabupaten tempat lahir"></div>
         <div class="field"><label>Tanggal Lahir <span class="req">*</span></label><input type="date" name="lahir" required></div>
-        <div class="field"><label>NIK <span class="req">*</span></label><input name="nik" inputmode="numeric" maxlength="16" pattern="[0-9]{16}" placeholder="16 digit NIK" required></div>
-        <div class="field"><label>Status Perkawinan</label><select name="status_kawin"><option value="">Pilih</option><option>Belum Menikah</option><option>Menikah</option><option>Cerai Hidup</option><option>Cerai Mati</option></select></div>
-        <div class="field"><label>No. WhatsApp <span class="req">*</span></label><input name="wa" placeholder="08xxxxxxxxxx" required></div>
+        <div class="field"><label>Status Keanggotaan <span class="req">*</span></label><select name="status_keanggotaan" id="statusKeanggotaan" required><option value="">Pilih</option><option>Krama Gede</option><option>Krama Istri</option><option>Krama Duda/Janda</option><option>Teruna</option><option>Pesaren</option></select></div>
+        <div class="field"><label>Jabatan Prajuru <span>(jika menjabat)</span></label><select name="jabatan_prajuru"><option value="">Tidak menjabat</option><option>Kelian Krama</option><option>Penyarikan</option><option>Petengen</option><option>Kasinoman</option><option>Prekangge</option></select></div>
+        <div class="field"><label>Pekerjaan</label><input name="pekerjaan"></div>
+        <div class="field"><label>No. WhatsApp <span class="req">*</span></label><input name="wa" placeholder="08xxxxxxxxxx" required><small>Boleh nomor keluarga yang dapat dihubungi.</small></div>
         <div class="field"><label>Email</label><input type="email" name="email"></div>
       </div>
     </section>
 
     <section class="card">
-      <div class="section-head"><div><h2>02 · Data Keluarga</h2><p>Untuk membangun struktur keluarga dan hubungan Krama.</p></div></div>
+      <div class="section-head"><div><h2>02 · Data Keluarga</h2><p>Data pasangan, anak, serta orang tua.</p></div></div>
       <div class="grid">
-        <div class="field"><label>Nomor KK <span class="req">*</span></label><input name="kk" inputmode="numeric" required></div>
-        <div class="field"><label>Nama Kepala Keluarga <span class="req">*</span></label><input name="kepala_kk" required></div>
-        <div class="field"><label>Hubungan dalam Keluarga</label><select name="hubungan"><option value="">Pilih</option><option>Kepala Keluarga</option><option>Suami/Istri</option><option>Anak</option><option>Orang Tua</option><option>Anggota Keluarga Lainnya</option></select></div>
-        <div class="field"><label>Nama Ayah</label><input name="ayah"></div>
+        <div class="field" id="fieldNamaPasangan" style="display:none"><label>Nama Pasangan</label><input name="nama_pasangan" disabled></div>
+        <div class="field" id="fieldStatusPasangan" style="display:none"><label>Status Pasangan</label><select name="status_pasangan" id="statusPasangan" disabled><option value="">Pilih</option><option>Hidup</option><option>Meninggal</option><option>Cerai</option></select></div>
+
+        <div class="field full" id="childrenField" style="display:none"><label>Data Anak <span>(opsional — isi bila anak belum bisa mengisi sendiri)</span></label>
+          <div id="childrenContainer" class="grid">
+            <div class="child-entry field full" data-child-index="1">
+              <div class="child-entry-head"><strong>Anak 1</strong></div>
+              <div class="grid">
+                <div class="field"><label>Nama Anak</label><input name="nama_anak_1"></div>
+                <div class="field"><label>Jenis Kelamin Anak</label><select name="jk_anak_1"><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+                <div class="field"><label>Status Anak</label><select name="status_anak_1"><option value="">Pilih</option><option>Belum Teruna/Pesaren</option><option>Teruna</option><option>Pesaren</option><option>Sudah Menjadi Krama</option><option>Menikah Keluar</option></select></div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="secondary" id="addChildButton" style="margin-top:12px">＋ Tambah Anak</button>
+        </div>
+
+        <div class="note full" style="grid-column:1/-1">Isi nama <strong>orang tua kandung</strong> (Ajik dan Ibu) selengkap mungkin untuk menyusun silsilah. Bagi Krama Istri, isi orang tua kandungnya.</div>
+        <div class="field"><label>Nama Ajik (Ayah)</label><input name="ayah"></div>
+        <div class="field"><label>Status Ayah</label><select name="status_ayah"><option value="">Pilih</option><option>Masih Hidup</option><option>Sudah Meninggal</option></select></div>
         <div class="field"><label>Nama Ibu</label><input name="ibu"></div>
-        <div class="field full"><label>Garis Keturunan / Kelompok <span>(jika digunakan secara resmi)</span></label><input name="keturunan"></div>
+        <div class="field"><label>Status Ibu</label><select name="status_ibu"><option value="">Pilih</option><option>Masih Hidup</option><option>Sudah Meninggal</option></select></div>
       </div>
     </section>
 
@@ -178,7 +198,6 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
             <div class="field"><label>Kabupaten/Kota <span class="req">*</span></label><select id="kabupaten" name="kabupaten" required disabled><option value="">Pilih provinsi terlebih dahulu</option></select></div>
             <div class="field"><label>Kecamatan <span class="req">*</span></label><select id="kecamatan" name="kecamatan" required disabled><option value="">Pilih kabupaten/kota terlebih dahulu</option></select></div>
             <div class="field"><label>Desa/Kelurahan <span class="req">*</span></label><select id="desa" name="desa" required disabled><option value="">Pilih kecamatan terlebih dahulu</option></select></div>
-            <div class="field"><label>Kode Pos</label><input name="kodepos" id="kodepos" inputmode="numeric" maxlength="5"></div>
           </div>
           <div class="region-source">Master wilayah Indonesia dimuat secara bertingkat agar pilihan Provinsi → Kabupaten/Kota → Kecamatan → Desa/Kelurahan konsisten.</div>
         </div>
@@ -188,9 +207,8 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
             <div class="field"><label>Planning Area <span class="req">*</span></label><select id="sgPlanningArea" name="planning_area"><option value="">Pilih region terlebih dahulu</option></select></div>
             <div class="field"><label>Subzone <span class="req">*</span></label><select id="sgSubzone" name="subzone"><option value="">Pilih planning area terlebih dahulu</option></select></div>
             <div class="field"><label>Street / Building</label><input id="sgStreet" name="street_building" placeholder="Contoh: 123 Example Street, #08-01"></div>
-            <div class="field"><label>Postal Code <span class="req">*</span></label><input id="sgPostal" name="kodepos_sg" inputmode="numeric" maxlength="6" placeholder="6 digit postal code"></div>
           </div>
-          <div class="region-source">Untuk Singapore digunakan struktur Region → Planning Area → Subzone. Street/Building dan Postal Code disimpan terpisah agar siap dipetakan ke Master Data Krama.</div>
+          <div class="region-source">Untuk Singapore digunakan struktur Region → Planning Area → Subzone.</div>
         </div>
       </div>
       <div class="location-box">
@@ -207,36 +225,91 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
           <div class="map-hint">📍 Tekan <strong>“Ambil Lokasi Saya”</strong> untuk mengambil lokasi otomatis. Setelah marker muncul, marker dapat digeser untuk menyesuaikan titik rumah.</div>
         </div>
         <div id="locationStatus" class="location-status" aria-live="polite">Belum ada titik lokasi yang dipilih.</div>
-        <small>Lokasi bersifat opsional dan digunakan untuk kebutuhan internal sesuai hak akses dan persetujuan. Peta hanya membantu menentukan titik; data koordinat belum dikirim ke server pada versi prototype ini.</small>
+        <small>Lokasi bersifat opsional dan digunakan untuk kebutuhan internal sesuai hak akses dan persetujuan. Peta membantu menentukan titik; koordinat ikut tersimpan bersama data Anda hanya bila Anda mengambil lokasi.</small>
       </div>
     </section>
 
-    <section class="card">
-      <div class="section-head"><div><h2>05 · Profil & Kontak</h2><p>Informasi tambahan yang dapat membantu pelayanan Dadya.</p></div></div>
-      <div class="grid">
-        <div class="field"><label>Pekerjaan</label><input name="pekerjaan"></div>
-        <div class="field"><label>Nama Instansi / Usaha</label><input name="instansi"></div>
-        <div class="field"><label>Nama Kontak Darurat</label><input name="darurat_nama"></div>
-        <div class="field"><label>Hubungan Kontak Darurat</label><select name="darurat_hubungan"><option value="">Pilih</option><option>Suami/Istri</option><option>Orang Tua</option><option>Anak</option><option>Saudara</option><option>Keluarga Lainnya</option><option>Teman</option><option>Lainnya</option></select></div>
-        <div class="field"><label>No. Kontak Darurat</label><input name="darurat_no"></div>
-        <div class="field full"><label>Kebutuhan Khusus / Aksesibilitas <span>(opsional)</span></label><textarea name="akses"></textarea></div>
-      </div>
-    </section>
+
 
     <section class="card">
-      <div class="section-head"><div><h2>06 · Persetujuan & Privasi</h2><p>Persetujuan diperlukan untuk penggunaan data dalam sistem digital Dadya.</p></div></div>
+      <div class="section-head"><div><h2>04 · Persetujuan & Privasi</h2><p>Persetujuan diperlukan untuk penggunaan data dalam sistem digital Dadya.</p></div></div>
       <div class="consent"><input type="checkbox" id="c1" required><label for="c1">Saya menyatakan data yang saya berikan benar dan dapat digunakan untuk administrasi serta komunikasi internal Dadya Panji Sakti. <span class="req">*</span></label></div>
       <div class="consent"><input type="checkbox" id="c2"><label for="c2">Saya menyetujui data kontak saya digunakan untuk pengumuman dan informasi Dadya.</label></div>
       <div class="consent"><input type="checkbox" id="c3"><label for="c3">Saya menyetujui lokasi tempat tinggal digunakan untuk Peta Sebaran Krama internal.</label></div>
       <div class="consent"><input type="checkbox" id="c4"><label for="c4">Saya bersedia mengikuti Paruman Online jika diundang.</label></div>
-      <div class="consent"><input type="checkbox" id="c5"><label for="c5">Saya menyetujui foto/profil saya dapat ditampilkan di direktori internal Krama sesuai hak akses.</label></div>
       <div class="actions">
-        <button class="primary" type="submit">Simpan Data (Prototype)</button>
+        <button class="primary" type="submit">Kirim Data</button>
         <button class="secondary" type="reset">Reset Form</button>
       </div>
       <div class="status" id="status"></div>
     </section>
+
+
+  <script>
+  (function(){
+    const container=document.getElementById('childrenContainer');
+    const addButton=document.getElementById('addChildButton');
+    if(!container || !addButton) return;
+    let childCount=1;
+    addButton.addEventListener('click',function(){
+      childCount++;
+      const entry=document.createElement('div');
+      entry.className='child-entry field full';
+      entry.dataset.childIndex=String(childCount);
+      entry.innerHTML=`
+        <div class="child-entry-head" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+          <strong>Anak ${childCount}</strong>
+          <button type="button" class="secondary remove-child" aria-label="Hapus Anak ${childCount}">Hapus</button>
+        </div>
+        <div class="grid">
+          <div class="field"><label>Nama Anak</label><input name="nama_anak_${childCount}"></div>
+          <div class="field"><label>Jenis Kelamin Anak</label><select name="jk_anak_${childCount}"><option value="">Pilih</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+          <div class="field"><label>Status Anak</label><select name="status_anak_${childCount}"><option value="">Pilih</option><option>Belum Teruna/Pesaren</option><option>Teruna</option><option>Pesaren</option><option>Sudah Menjadi Krama</option><option>Menikah Keluar</option></select></div>
+        </div>`;
+      container.appendChild(entry);
+      entry.querySelector('.remove-child').addEventListener('click',()=>entry.remove());
+    });
+  })();
+  </script>
   </form>
+  <script>
+  (function(){
+    const form = document.getElementById('kramaForm');
+    const $ = id => document.getElementById(id);
+    const JK = {'Krama Gede':'Laki-laki','Krama Istri':'Perempuan','Teruna':'Laki-laki','Pesaren':'Perempuan'};
+    const ADA_PASANGAN = ['Krama Gede','Krama Istri','Krama Duda/Janda'];
+    function setGroup(el, on){
+      el.style.display = on ? '' : 'none';
+      el.querySelectorAll('input,select,textarea,button').forEach(i => { if (i.tagName !== 'BUTTON') i.disabled = !on; });
+    }
+    function apply(){
+      const st = $('statusKeanggotaan').value;
+      const by = $('diisiOleh').value;
+      const pengisi = by && by !== 'Diri Sendiri';
+      setGroup($('fieldNamaPengisi'), pengisi);
+      $('namaPengisi').required = !!pengisi;
+
+      const ada = ADA_PASANGAN.includes(st);
+      setGroup($('fieldNamaPasangan'), ada);
+      setGroup($('fieldStatusPasangan'), ada);
+      setGroup($('childrenField'), ada);
+      const lblPas = $('fieldNamaPasangan').querySelector('label');
+      lblPas.textContent = st === 'Krama Istri' ? 'Nama Suami' : st === 'Krama Gede' ? 'Nama Istri' : 'Nama Mendiang / Mantan Pasangan';
+      const sp = $('statusPasangan');
+      sp.required = (st === 'Krama Duda/Janda');
+      Array.from(sp.options).forEach(o => { o.disabled = (st === 'Krama Duda/Janda' && o.value === 'Hidup'); });
+      if (st === 'Krama Duda/Janda' && sp.value === 'Hidup') sp.value = '';
+
+      const jk = $('jk'), wajib = JK[st];
+      Array.from(jk.options).forEach(o => { o.disabled = !!(wajib && o.value && o.value !== wajib); });
+      if (wajib) jk.value = wajib;
+    }
+    ['statusKeanggotaan','diisiOleh'].forEach(id => $(id).addEventListener('change', apply));
+    form.addEventListener('reset', () => setTimeout(apply, 0));
+    apply();
+  })();
+  </script>
+
 
   
   <section class="card website-card">
@@ -258,7 +331,7 @@ button{border:0;border-radius:13px;padding:13px 18px;font-weight:800;cursor:poin
  * Catatan: browser lintas domain dapat membatasi pembacaan respons Apps Script.
  * Uji dulu dengan data dummy. Jangan gunakan data pribadi sebelum konfirmasi.
  */
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziwWD8oxBrlfxoY1a6Ph0vDsnLJK9Tm6hxLBNU8yu0Tt4JLBH-rIQdQm_K7_qnkPJB/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJzzrgetgdjmzQa5DwsAYHYPMG6yYLOQcN9_JjMHMs3XrZOh3Z6HY0Hkkb6BMnMe1gUA/exec";
 
 document.getElementById('kramaForm').addEventListener('submit', async function(e){
   e.preventDefault();
@@ -276,17 +349,35 @@ document.getElementById('kramaForm').addEventListener('submit', async function(e
 
   const data = {};
   new FormData(form).forEach((value, key) => { data[key] = String(value).trim(); });
+
+  // Simpan NAMA wilayah yang terlihat di dropdown, bukan ID kode wilayah.
+  [
+    ['provinsi', 'provinsi'],
+    ['kabupaten', 'kabupaten'],
+    ['kecamatan', 'kecamatan'],
+    ['desa', 'desa']
+  ].forEach(([fieldName, elementId]) => {
+    const el = document.getElementById(elementId);
+    if (el && el.selectedIndex > 0) {
+      data[fieldName] = el.options[el.selectedIndex].textContent.trim();
+    } else {
+      data[fieldName] = '';
+    }
+  });
+
   const consent = {};
-  ['c1','c2','c3','c4','c5'].forEach(id => {
+  ['c1','c2','c3','c4'].forEach(id => {
     const el = document.getElementById(id);
     consent[id] = !!(el && el.checked);
   });
+  const sz = document.getElementById('sgSubzone');
+  if (sz && !sz.disabled && sz.selectedIndex > 0) data.subzone = sz.options[sz.selectedIndex].textContent.trim();
   data.persetujuan_penggunaan_data = consent.c1;
 
   const payload = { data, consent };
   const submitButton = form.querySelector('button[type="submit"]');
   if (submitButton) submitButton.disabled = true;
-  status.textContent = 'Mengirim data uji…';
+  status.textContent = 'Mengirim data…';
   try {
     /*
      * text/plain avoids the JSON preflight in many browser setups.
@@ -301,13 +392,54 @@ document.getElementById('kramaForm').addEventListener('submit', async function(e
     });
     const result = await response.json();
     if (result && result.success && result.stage === 'saved') {
-      status.textContent = 'Data berhasil diterima. ID Krama: ' + (result.idKrama || 'menunggu konfirmasi') + '. Status: menunggu verifikasi Prajuru.';
+      status.textContent = 'Data berhasil diterima. Kode Anggota: ' + (result.kodeAnggota || result.kodeKrama || 'menunggu konfirmasi') + '. Status: menunggu verifikasi Prajuru.';
       form.reset();
-    } else if (result && result.success && result.stage === 'validation_only') {
-      status.textContent = 'Validasi berhasil, tetapi penyimpanan belum diaktifkan. Tidak ada data yang disimpan.';
-    } else {
-      status.textContent = (result && result.message) ? result.message : 'Pengiriman belum berhasil dikonfirmasi. Periksa Apps Script dan Google Sheets sebelum mencoba lagi.';
-    }
+    
+} else if (result && result.success && result.stage === 'validation_only') {
+  const ringkasan = result.summary
+    ? '\nRingkasan: ' + JSON.stringify(result.summary)
+    : '';
+
+  const diagnostik = result.diagnostic
+    ? '\nDiagnostik anak: ' + JSON.stringify(result.diagnostic)
+    : '';
+
+  const fieldAnak = result.receivedChildFields
+    ? '\nField anak diterima: ' + JSON.stringify(result.receivedChildFields)
+    : '';
+
+
+const hasilUjiAnak = result.childWriteTest
+  ? '\nHasil uji tulis anak: ' + JSON.stringify(result.childWriteTest)
+  : '\nHasil uji tulis anak: BELUM DITERIMA';
+
+status.textContent =
+  (result.message || 'Validasi berhasil.') +
+  ringkasan +
+  diagnostik +
+  fieldAnak +
+  hasilUjiAnak;
+
+} else {
+
+  const pesan = (result && result.message)
+    ? result.message
+    : 'Pengiriman belum berhasil dikonfirmasi.';
+
+  
+const detailError = (result && result.detail)
+  ? '\nDetail error: ' + result.detail
+  : '';
+
+const detailDiagnostic = (result && result.diagnostic)
+  ? '\nDiagnostik anak: ' + JSON.stringify(result.diagnostic)
+  : '';
+
+const detail = detailError + detailDiagnostic;
+
+
+  status.textContent = pesan + detail;
+}
   } catch (err) {
     status.textContent = 'Browser tidak dapat membaca respons Apps Script. Data mungkin belum tersimpan atau request ditolak. Periksa Execution Log dan Google Sheets sebelum mengirim ulang agar tidak terjadi pengiriman berulang.';
   } finally {
@@ -323,8 +455,8 @@ const ID_BASE='https://cdn.jsdelivr.net/gh/izzulabadi/api-wilayah-indonesia-2026
 const SG_API='https://cdn.jsdelivr.net/gh/open-admin-data/singapore-administrative-divisions@main/data/all-subzone.json';
 const SG_FALLBACK='https://raw.githubusercontent.com/open-admin-data/singapore-administrative-divisions/main/data/all-subzone.json';
 const negara=document.getElementById('domisiliNegara'), indonesiaFields=document.getElementById('indonesiaFields'), singaporeFields=document.getElementById('singaporeFields');
-const prov=document.getElementById('provinsi'), kab=document.getElementById('kabupaten'), kec=document.getElementById('kecamatan'), desa=document.getElementById('desa'), kodepos=document.getElementById('kodepos');
-const alamat=document.getElementById('alamatDomisili'), sgRegion=document.getElementById('sgRegion'), sgArea=document.getElementById('sgPlanningArea'), sgSubzone=document.getElementById('sgSubzone'), sgStreet=document.getElementById('sgStreet'), sgPostal=document.getElementById('sgPostal');
+const prov=document.getElementById('provinsi'), kab=document.getElementById('kabupaten'), kec=document.getElementById('kecamatan'), desa=document.getElementById('desa');
+const alamat=document.getElementById('alamatDomisili'), sgRegion=document.getElementById('sgRegion'), sgArea=document.getElementById('sgPlanningArea'), sgSubzone=document.getElementById('sgSubzone'), sgStreet=document.getElementById('sgStreet');
 const sgState={rows:[],loaded:false};
 const ID_PROVINCES=[
 {id:'11',name:'ACEH'},{id:'12',name:'SUMATERA UTARA'},{id:'13',name:'SUMATERA BARAT'},{id:'14',name:'RIAU'},{id:'15',name:'JAMBI'},{id:'16',name:'SUMATERA SELATAN'},{id:'17',name:'BENGKULU'},{id:'18',name:'LAMPUNG'},{id:'19',name:'KEPULAUAN BANGKA BELITUNG'},{id:'21',name:'KEPULAUAN RIAU'},
@@ -335,12 +467,12 @@ const ID_PROVINCES=[
 function fillSelect(el,items,placeholder,valueKey='id',labelKey='name'){el.innerHTML='';const f=document.createElement('option');f.value='';f.textContent=placeholder;el.appendChild(f);items.forEach(x=>{const o=document.createElement('option');if(typeof x==='string'){o.value=x;o.textContent=x}else{o.value=x[valueKey]??x.name;o.textContent=x[labelKey]??x.name}el.appendChild(o)});el.disabled=items.length===0}
 async function getJSON(url,key){const cacheKey='dps-v5:'+key+':'+url;try{const cached=sessionStorage.getItem(cacheKey);if(cached)return JSON.parse(cached)}catch(e){}const r=await fetch(url,{cache:'force-cache'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();try{sessionStorage.setItem(cacheKey,JSON.stringify(data))}catch(e){}return data}
 function loadProvincesFast(){fillSelect(prov,ID_PROVINCES,'Pilih provinsi');prov.disabled=false}
-prov.addEventListener('change',async()=>{fillSelect(kab,[],'Memuat kabupaten/kota...');fillSelect(kec,[],'Pilih kabupaten/kota terlebih dahulu');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!prov.value)return;try{const data=await getJSON(`${ID_BASE}/regencies/${prov.value}.json`,'regencies-'+prov.value);fillSelect(kab,data,'Pilih kabupaten/kota')}catch(e){fillSelect(kab,[],'Gagal memuat kabupaten/kota — coba lagi');console.error(e)}});
-kab.addEventListener('change',async()=>{fillSelect(kec,[],'Memuat kecamatan...');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');kodepos.value='';if(!kab.value)return;try{const data=await getJSON(`${ID_BASE}/districts/${kab.value}.json`,'districts-'+kab.value);fillSelect(kec,data,'Pilih kecamatan')}catch(e){fillSelect(kec,[],'Gagal memuat kecamatan — coba lagi');console.error(e)}});
-kec.addEventListener('change',async()=>{fillSelect(desa,[],'Memuat desa/kelurahan...');kodepos.value='';if(!kec.value)return;try{const data=await getJSON(`${ID_BASE}/villages/${kec.value}.json`,'villages-'+kec.value);fillSelect(desa,data,'Pilih desa/kelurahan');const selected=data.find(x=>x.id===desa.value);if(selected?.postal_code)kodepos.value=selected.postal_code}catch(e){fillSelect(desa,[],'Gagal memuat desa/kelurahan — coba lagi');console.error(e)}});
-desa.addEventListener('change',()=>{const opt=desa.options[desa.selectedIndex];if(opt&&opt.dataset?.postal)kodepos.value=opt.dataset.postal});
-function setIndonesiaRequired(){[prov,kab,kec,desa].forEach(x=>x.required=true);[sgRegion,sgArea,sgSubzone,sgPostal].forEach(x=>x.required=false)}
-function setSingaporeRequired(){[prov,kab,kec,desa].forEach(x=>x.required=false);[sgRegion,sgArea,sgSubzone,sgPostal].forEach(x=>x.required=true)}
+prov.addEventListener('change',async()=>{fillSelect(kab,[],'Memuat kabupaten/kota...');fillSelect(kec,[],'Pilih kabupaten/kota terlebih dahulu');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');if(!prov.value)return;try{const data=await getJSON(`${ID_BASE}/regencies/${prov.value}.json`,'regencies-'+prov.value);fillSelect(kab,data,'Pilih kabupaten/kota')}catch(e){fillSelect(kab,[],'Gagal memuat kabupaten/kota — coba lagi');console.error(e)}});
+kab.addEventListener('change',async()=>{fillSelect(kec,[],'Memuat kecamatan...');fillSelect(desa,[],'Pilih kecamatan terlebih dahulu');if(!kab.value)return;try{const data=await getJSON(`${ID_BASE}/districts/${kab.value}.json`,'districts-'+kab.value);fillSelect(kec,data,'Pilih kecamatan')}catch(e){fillSelect(kec,[],'Gagal memuat kecamatan — coba lagi');console.error(e)}});
+kec.addEventListener('change',async()=>{fillSelect(desa,[],'Memuat desa/kelurahan...');if(!kec.value)return;try{const data=await getJSON(`${ID_BASE}/villages/${kec.value}.json`,'villages-'+kec.value);fillSelect(desa,data,'Pilih desa/kelurahan');}catch(e){fillSelect(desa,[],'Gagal memuat desa/kelurahan — coba lagi');console.error(e)}});
+
+function setIndonesiaRequired(){[prov,kab,kec,desa].forEach(x=>x.required=true);[sgRegion,sgArea,sgSubzone].forEach(x=>x.required=false)}
+function setSingaporeRequired(){[prov,kab,kec,desa].forEach(x=>x.required=false);[sgRegion,sgArea,sgSubzone].forEach(x=>x.required=true)}
 async function loadSingapore(){
   if(sgState.loaded)return;
   try{
@@ -374,7 +506,7 @@ sgArea.addEventListener('change',()=>{
   fillSelect(sgSubzone,z.map(x=>({id:x.id,name:x.name?.en||x.name?.local})), 'Pilih subzone');
 });
 negara.addEventListener('change',async()=>{const sg=negara.value==='Singapore';indonesiaFields.style.display=sg?'none':'block';singaporeFields.style.display=sg?'block':'none';if(sg){setSingaporeRequired();await loadSingapore()}else setIndonesiaRequired()});
-document.getElementById('kramaForm').addEventListener('submit',()=>{if(negara.value==='Singapore'){prov.innerHTML='<option value="Singapore">Singapore</option>';prov.value='Singapore';kab.innerHTML='<option value="Singapore">Singapore</option>';kab.value='Singapore';kec.innerHTML='<option value="'+sgArea.value+'">'+sgArea.value+'</option>';kec.value=sgArea.value;desa.innerHTML='<option value="'+sgSubzone.value+'">'+sgSubzone.value+'</option>';desa.value=sgSubzone.value;kodepos.value=sgPostal.value;const base=alamat.value.trim();if(sgStreet.value.trim())alamat.value=base?(base+' — '+sgStreet.value.trim()):sgStreet.value.trim();kodepos.value=sgPostal.value}});
+document.getElementById('kramaForm').addEventListener('submit',()=>{if(negara.value==='Singapore'){prov.innerHTML='<option value="Singapore">Singapore</option>';prov.value='Singapore';kab.innerHTML='<option value="Singapore">Singapore</option>';kab.value='Singapore';kec.innerHTML='<option value="'+sgArea.value+'">'+sgArea.value+'</option>';kec.value=sgArea.value;desa.innerHTML='<option value="'+sgSubzone.value+'">'+sgSubzone.value+'</option>';desa.value=sgSubzone.value;const base=alamat.value.trim();if(sgStreet.value.trim())alamat.value=base?(base+' — '+sgStreet.value.trim()):sgStreet.value.trim();}});
 loadProvincesFast();setIndonesiaRequired();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
